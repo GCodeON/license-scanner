@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 
 export default function Webcam() {
     const videoRef = useRef(null);
+    const canvasRef = useRef(null);
 
     useEffect(() => {
         const startWebcam = async () => {
@@ -10,7 +11,7 @@ export default function Webcam() {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 videoRef.current.srcObject = stream;
             } catch(error) {
-                console.error('Error accessing webcam:', error)
+                console.error(`Error accessing webcam: ${error}`, error)
             }
         };
 
@@ -27,9 +28,25 @@ export default function Webcam() {
 
     }, []);
 
+    const captureImage = () => {
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imageDataUrl = canvas.toDataURL('image/png');
+        console.log('captured image:', imageDataUrl);
+    }
+
     return (
         <>
             <video ref={videoRef} autoPlay playsInline />
+            <button onClick={captureImage}>Capture Image</button>
+            <canvas ref={canvasRef}></canvas>
         </>
     )
 }
