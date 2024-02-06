@@ -1,19 +1,12 @@
 'use client'
 import { useEffect, useRef } from 'react';
+import '@/scss/webcam.scss';
 
 export default function Webcam() {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
 
     useEffect(() => {
-        const startWebcam = async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                videoRef.current.srcObject = stream;
-            } catch(error) {
-                console.error(`Error accessing webcam: ${error}`, error)
-            }
-        };
 
         startWebcam();
 
@@ -27,6 +20,15 @@ export default function Webcam() {
         };
 
     }, []);
+
+    const startWebcam = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoRef.current.srcObject = stream;
+        } catch(error) {
+            console.error(`Error accessing webcam: ${error}`, error)
+        }
+    };
 
     const captureImage = () => {
         const video = videoRef.current;
@@ -43,10 +45,13 @@ export default function Webcam() {
     }
 
     return (
-        <>
-            <video ref={videoRef} autoPlay playsInline />
-            <button onClick={captureImage}>Capture Image</button>
+        <div className="webcam">
+            <div className="mediaWrapper">
+                <video ref={videoRef} autoPlay playsInline />
+                <canvas ref={canvasRef}></canvas>
+            </div>
             <canvas ref={canvasRef}></canvas>
-        </>
+            <button onClick={captureImage}>Capture Image</button>
+        </div>
     )
 }
