@@ -1,10 +1,13 @@
 'use client'
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '@/scss/webcam.scss';
+import Tesseract from 'tesseract.js';
 
 export default function Webcam() {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
+
+    const [imageSrc, setImageSrc] = useState(null);
 
     useEffect(() => {
 
@@ -20,6 +23,20 @@ export default function Webcam() {
         };
 
     }, []);
+
+    useEffect(() => {
+        console.log('image src loaded', imageSrc);
+        if(imageSrc) {
+            Tesseract.recognize(imageSrc, 'eng', {
+                logger: (info) => {
+                    console.log('info', info);
+                    if (info.status === 'done') {
+                        console.log('done', info.data.text);
+                    }
+                }
+            })
+        }
+    }, [imageSrc])
 
     const startWebcam = async () => {
         try {
@@ -42,6 +59,12 @@ export default function Webcam() {
 
         const imageDataUrl = canvas.toDataURL('image/png');
         console.log('captured image:', imageDataUrl);
+
+        if(imageDataUrl) {
+            setImageSrc(imageDataUrl);
+        }
+
+       
     }
 
     return (
