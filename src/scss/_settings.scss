@@ -1,0 +1,33 @@
+
+/*
+||--------------------------||
+||         Palette          ||
+||--------------------------||
+*/
+$color-primary   : #e81617;
+$color-secondary : #ffffff43;
+
+/*
+||--------------------------||
+||     Responsiveness       ||
+||--------------------------||
+*/
+
+$breakpoints: (
+  'small'  : ( min-width:  375px ),
+  'medium' : ( min-width:  767px ),
+  'tablet' : ( min-width:  992px ),
+  'large'  : ( min-width: 1024px ),
+  'xlarge' : ( min-width: 1200px ),
+  'xxlarge': ( min-width: 1440px )
+);
+
+/*
+||--------------------------||
+||         Effects          ||
+||--------------------------||
+*/
+
+$bottom-shadow : 0px 0px 20px -15px #000;
+$top-shadow    : 0px -30px 15px -40px #000;
+$left-shadow   : 0px 2px 15px -10px #000;
