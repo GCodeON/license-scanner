@@ -2,13 +2,14 @@
 import { useEffect, useRef, useState } from 'react';
 import '@/scss/webcam.scss';
 import Tesseract from 'tesseract.js';
-import { PDF417Reader, DecodeHintType } from '@zxing/library';
+import { PDF417Reader } from '@zxing/library';
 
 export default function Webcam() {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
 
     const [imageSrc, setImageSrc] = useState(null);
+    const [scanData, setScanData] = useState(null);
 
     useEffect(() => {
 
@@ -26,7 +27,6 @@ export default function Webcam() {
     }, []);
 
     useEffect(() => {
-        console.log('image src loaded', imageSrc);
         if(imageSrc) {
             // Tesseract.recognize(imageSrc, 'eng', {
             //     logger: (info) => console.log('logger', info)    
@@ -40,10 +40,15 @@ export default function Webcam() {
 
             decodePDF417FromImage();
 
-            
+        }
+    }, [imageSrc]);
+
+    useEffect(() => {
+        if(scanData) {
+            console.log('scanData', scanData)
 
         }
-    }, [imageSrc])
+    }, [scanData]);
 
     const startWebcam = async () => {
         try {
@@ -65,7 +70,6 @@ export default function Webcam() {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         const imageDataUrl = canvas.toDataURL('image/png');
-        console.log('captured image:', imageDataUrl);
 
         if(imageDataUrl) {
             setImageSrc(imageDataUrl);
@@ -79,7 +83,6 @@ export default function Webcam() {
           const reader = new FileReader();
     
           reader.onload = (event) => {
-            console.log('image reader', event.target.result);
             setImageSrc(event.target.result);
           };
     
@@ -90,7 +93,6 @@ export default function Webcam() {
     const decodePDF417FromImage = async () => {
         try {
             const barcodeDetector = new BarcodeDetector({ formats: ['pdf417'] });
-            const pdf417Reader = new PDF417Reader();
       
             const imageElement = new Image();
       
@@ -103,11 +105,9 @@ export default function Webcam() {
 
       
             const barcodes = await barcodeDetector.detect(imageElement);
-            console.log('barcodes', barcodes);
+            // console.log('barcodes', barcodes);
             if (barcodes.length > 0) {
-            //   const pdf417Data = await pdf417Reader.decodeFromImageElement(imageElement);
-              console.log('Decoded PDF417 barcode:', barcodes[0].rawValue);
-        
+              setScanData(barcodes[0].rawValue)
             
             } else {
               console.error('No PDF417 barcode found in the image.');
