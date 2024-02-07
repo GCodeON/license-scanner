@@ -28,12 +28,13 @@ export default function Webcam() {
         console.log('image src loaded', imageSrc);
         if(imageSrc) {
             Tesseract.recognize(imageSrc, 'eng', {
-                logger: (info) => {
-                    console.log('info', info);
-                    if (info.status === 'done') {
-                        console.log('done', info.data.text);
-                    }
-                }
+                logger: (info) => console.log('logger', info)    
+            })
+            .then(result => {
+                console.log('res', result);
+            })
+            .catch(error => {
+                console.log('error', error)
             })
         }
     }, [imageSrc])
