@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import '@/scss/webcam.scss';
 import Tesseract from 'tesseract.js';
+import { PDF417Reader, DecodeHintType } from '@zxing/library';
 
 export default function Webcam() {
     const videoRef = useRef(null);
@@ -27,15 +28,20 @@ export default function Webcam() {
     useEffect(() => {
         console.log('image src loaded', imageSrc);
         if(imageSrc) {
-            Tesseract.recognize(imageSrc, 'eng', {
-                logger: (info) => console.log('logger', info)    
-            })
-            .then(result => {
-                console.log('res', result);
-            })
-            .catch(error => {
-                console.log('error', error)
-            })
+            // Tesseract.recognize(imageSrc, 'eng', {
+            //     logger: (info) => console.log('logger', info)    
+            // })
+            // .then(result => {
+            //     console.log('res', result);
+            // })
+            // .catch(error => {
+            //     console.log('error', error)
+            // })
+
+            decodePDF417FromImage();
+
+            
+
         }
     }, [imageSrc])
 
@@ -81,6 +87,37 @@ export default function Webcam() {
         }
     };
 
+    const decodePDF417FromImage = async () => {
+        try {
+            const barcodeDetector = new BarcodeDetector({ formats: ['pdf417'] });
+            const pdf417Reader = new PDF417Reader();
+      
+            const imageElement = new Image();
+      
+            // Load the image and wait for it to be fully loaded
+            await new Promise((resolve, reject) => {
+              imageElement.onload = resolve;
+              imageElement.onerror = reject;
+              imageElement.src = imageSrc;
+            });
+
+      
+            const barcodes = await barcodeDetector.detect(imageElement);
+            console.log('barcodes', barcodes);
+            if (barcodes.length > 0) {
+            //   const pdf417Data = await pdf417Reader.decodeFromImageElement(imageElement);
+              console.log('Decoded PDF417 barcode:', barcodes[0].rawValue);
+        
+            
+            } else {
+              console.error('No PDF417 barcode found in the image.');
+            }
+
+        } catch (error) {
+          console.error('Error decoding PDF417 barcode:', error.message);
+        }
+      };
+
     return (
         <div className="webcam">
             <div className="mediaWrapper">
@@ -90,6 +127,9 @@ export default function Webcam() {
             <canvas ref={canvasRef}></canvas>
             <input type="file" onChange={handleFileChange} />
             <button onClick={captureImage}>Capture Image</button>
+            {imageSrc && (
+                <img src={imageSrc} alt="PDF417 Image" />
+            )}
         </div>
     )
 }
