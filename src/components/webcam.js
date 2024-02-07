@@ -63,9 +63,22 @@ export default function Webcam() {
         if(imageDataUrl) {
             setImageSrc(imageDataUrl);
         }
-
-       
     }
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+    
+        if (file) {
+          const reader = new FileReader();
+    
+          reader.onload = (event) => {
+            console.log('image reader', event.target.result);
+            setImageSrc(event.target.result);
+          };
+    
+          reader.readAsDataURL(file);
+        }
+    };
 
     return (
         <div className="webcam">
@@ -74,6 +87,7 @@ export default function Webcam() {
                 <canvas ref={canvasRef}></canvas>
             </div>
             <canvas ref={canvasRef}></canvas>
+            <input type="file" onChange={handleFileChange} />
             <button onClick={captureImage}>Capture Image</button>
         </div>
     )
