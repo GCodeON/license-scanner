@@ -130,6 +130,9 @@ export default function Webcam() {
             {imageSrc && (
                 <img src={imageSrc} alt="PDF417 Image" />
             )}
+            {scanData && (
+                <p>{scanData}</p>
+            )}
         </div>
     )
 }
