@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import '@/scss/scanner.scss';
 import Tesseract from 'tesseract.js';
 import { parseData } from '@/utils/license-mapping';
+import { BrowserPDF417Reader } from '@zxing/browser'
 
 
 export default function LicenseScanner() {
@@ -13,8 +14,12 @@ export default function LicenseScanner() {
     const [scanData, setScanData] = useState(null);
     const [licenseData, setLicenseData] = useState(null);
 
+    const codeReader = new BrowserPDF417Reader();
+
     useEffect(() => {
 
+        console.log('code reader', codeReader);
+        
         startWebcam();
 
         return () => {
@@ -30,20 +35,22 @@ export default function LicenseScanner() {
 
     useEffect(() => {
         if(imageSrc) {
-            Tesseract.recognize(imageSrc, 'eng', {
-                logger: (info) => console.log('logger', info)    
-            })
-            .then(result => {
-                console.log('res', result);
-            })
-            .catch(error => {
-                console.log('error', error)
-            })
+            // Tesseract.recognize(imageSrc, 'eng', {
+            //     logger: (info) => console.log('logger', info)    
+            // })
+            // .then(result => {
+            //     console.log('res', result);
+            // })
+            // .catch(error => {
+            //     console.log('error', error)
+            // })
 
             decodePDF417FromImage();
+            
 
         }
     }, [imageSrc]);
+    
 
 
     const startWebcam = async () => {
@@ -88,30 +95,37 @@ export default function LicenseScanner() {
 
     const decodePDF417FromImage = async () => {
         try {
-            const barcodeDetector = new BarcodeDetector({ formats: ['pdf417'] });
+            // const barcodeDetector = new BarcodeDetector({ formats: ['pdf417'] });
       
-            const imageElement = new Image();
+            // const imageElement = new Image();
       
-            // Load the image and wait for it to be fully loaded
-            await new Promise((resolve, reject) => {
-              imageElement.onload = resolve;
-              imageElement.onerror = reject;
-              imageElement.src = imageSrc;
-            });
+            // // Load the image and wait for it to be fully loaded
+            // await new Promise((resolve, reject) => {
+            //   imageElement.onload = resolve;
+            //   imageElement.onerror = reject;
+            //   imageElement.src = imageSrc;
+            // });
 
       
-            const barcodes = await barcodeDetector.detect(imageElement);
-            // console.log('barcodes', barcodes);
-            if (barcodes.length > 0) {
-                console.log('raw', barcodes[0].rawValue);
-                const parsedData = parseData(barcodes[0].rawValue);
-                setScanData(barcodes[0].rawValue)
-                console.log('parsed', parsedData);
-                setLicenseData(parsedData);
+            // const barcodes = await barcodeDetector.detect(imageElement);
+            // // console.log('barcodes', barcodes);
+            // if (barcodes.length > 0) {
+            //     console.log('raw', barcodes[0].rawValue);
+            //     const parsedData = parseData(barcodes[0].rawValue);
+            //     setScanData(barcodes[0].rawValue)
+            //     console.log('parsed', parsedData);
+            //     setLicenseData(parsedData);
             
-            } else {
-              console.error('No PDF417 barcode found in the image.');
-            }
+            // } else {
+            //   console.error('No PDF417 barcode found in the image.');
+            // }
+
+            const resultImage = await codeReader.decodeFromImageUrl(imageSrc);
+  
+            const parsedData = parseData(resultImage.text);
+            setScanData(resultImage.text)
+            console.log('parsed', parsedData);
+            setLicenseData(parsedData);
 
         } catch (error) {
           console.error('Error decoding PDF417 barcode:', error.message);
