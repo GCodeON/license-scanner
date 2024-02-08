@@ -14,11 +14,7 @@ export default function LicenseScanner() {
     const [scanData, setScanData] = useState(null);
     const [licenseData, setLicenseData] = useState(null);
 
-    const codeReader = new BrowserPDF417Reader();
-
     useEffect(() => {
-
-        console.log('code reader', codeReader);
         
         startWebcam();
 
@@ -120,6 +116,7 @@ export default function LicenseScanner() {
             //   console.error('No PDF417 barcode found in the image.');
             // }
 
+            const codeReader = new BrowserPDF417Reader();
             const resultImage = await codeReader.decodeFromImageUrl(imageSrc);
   
             const parsedData = parseData(resultImage.text);
