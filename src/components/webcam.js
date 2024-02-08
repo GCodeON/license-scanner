@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import '@/scss/webcam.scss';
 import Tesseract from 'tesseract.js';
-import { PDF417Reader } from '@zxing/library';
+import { parseData } from '@/utils/license-mapping';
+
 
 export default function Webcam() {
     const videoRef = useRef(null);
@@ -10,6 +11,7 @@ export default function Webcam() {
 
     const [imageSrc, setImageSrc] = useState(null);
     const [scanData, setScanData] = useState(null);
+    const [licenseData, setLicenseData] = useState(null);
 
     useEffect(() => {
 
@@ -107,7 +109,13 @@ export default function Webcam() {
             const barcodes = await barcodeDetector.detect(imageElement);
             // console.log('barcodes', barcodes);
             if (barcodes.length > 0) {
+          
+
+            console.log('raw', barcodes[0].rawValue);
+              const parsedData = parseData(barcodes[0].rawValue);
               setScanData(barcodes[0].rawValue)
+              console.log('parsed', parsedData);
+              setLicenseData(parsedData);
             
             } else {
               console.error('No PDF417 barcode found in the image.');
@@ -130,7 +138,7 @@ export default function Webcam() {
             {imageSrc && (
                 <img src={imageSrc} alt="PDF417 Image" />
             )}
-            {scanData && (
+            {licenseData && (
                 <p>{scanData}</p>
             )}
         </div>
