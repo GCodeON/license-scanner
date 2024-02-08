@@ -1,11 +1,11 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
-import '@/scss/webcam.scss';
+import '@/scss/scanner.scss';
 import Tesseract from 'tesseract.js';
 import { parseData } from '@/utils/license-mapping';
 
 
-export default function Webcam() {
+export default function LicenseScanner() {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
 
@@ -127,7 +127,7 @@ export default function Webcam() {
       };
 
     return (
-        <div className="webcam">
+        <div className="scanner">
             <div className="mediaWrapper">
                 <video ref={videoRef} autoPlay playsInline />
                 <canvas ref={canvasRef}></canvas>
@@ -139,7 +139,13 @@ export default function Webcam() {
                 <img src={imageSrc} alt="PDF417 Image" />
             )}
             {licenseData && (
-                <p>{scanData}</p>
+                <div>
+                    {/* <p>{scanData}</p> */}
+                    <p>Full Name: {licenseData['first_name']} {licenseData['last_name']}</p>
+                    <p>Address: {licenseData['address_1']} {licenseData['address_2']}<br></br> {licenseData['city']}  {licenseData['state']} {licenseData['postal_code']}</p>
+                    <p>EXP: {licenseData['License Expiration Date']}</p>
+                    <p>ISS: {licenseData['License or ID Document Issue Date']}</p>
+                </div>
             )}
         </div>
     )
