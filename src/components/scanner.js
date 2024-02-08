@@ -45,12 +45,6 @@ export default function LicenseScanner() {
         }
     }, [imageSrc]);
 
-    useEffect(() => {
-        if(scanData) {
-            console.log('scanData', scanData)
-
-        }
-    }, [scanData]);
 
     const startWebcam = async () => {
         try {
@@ -109,13 +103,11 @@ export default function LicenseScanner() {
             const barcodes = await barcodeDetector.detect(imageElement);
             // console.log('barcodes', barcodes);
             if (barcodes.length > 0) {
-          
-
-            console.log('raw', barcodes[0].rawValue);
-              const parsedData = parseData(barcodes[0].rawValue);
-              setScanData(barcodes[0].rawValue)
-              console.log('parsed', parsedData);
-              setLicenseData(parsedData);
+                console.log('raw', barcodes[0].rawValue);
+                const parsedData = parseData(barcodes[0].rawValue);
+                setScanData(barcodes[0].rawValue)
+                console.log('parsed', parsedData);
+                setLicenseData(parsedData);
             
             } else {
               console.error('No PDF417 barcode found in the image.');
