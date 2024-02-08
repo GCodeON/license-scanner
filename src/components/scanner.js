@@ -30,15 +30,15 @@ export default function LicenseScanner() {
 
     useEffect(() => {
         if(imageSrc) {
-            // Tesseract.recognize(imageSrc, 'eng', {
-            //     logger: (info) => console.log('logger', info)    
-            // })
-            // .then(result => {
-            //     console.log('res', result);
-            // })
-            // .catch(error => {
-            //     console.log('error', error)
-            // })
+            Tesseract.recognize(imageSrc, 'eng', {
+                logger: (info) => console.log('logger', info)    
+            })
+            .then(result => {
+                console.log('res', result);
+            })
+            .catch(error => {
+                console.log('error', error)
+            })
 
             decodePDF417FromImage();
 
