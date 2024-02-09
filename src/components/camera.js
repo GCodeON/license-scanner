@@ -13,6 +13,7 @@ const Camera = ({onImageCapture}) => {
     const initCamera = async () => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
+        console.log('devices', videoTracks);
         const videoTracks = devices.filter(device => device.kind === 'videoinput');
         console.log('video tracks', videoTracks);
         const labels = videoTracks.map(track => track.label);
