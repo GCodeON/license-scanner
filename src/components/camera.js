@@ -22,19 +22,19 @@ const Camera = ({onImageCapture}) => {
       console.log('devices', devices);
       const videoTracks = devices.filter(device => device.kind === 'videoinput');
       console.log('video tracks', videoTracks);
-      const labels = videoTracks.map(track => track.label);
-      console.log('labels', labels);
 
-      setCameraLabels(labels);
-
-      if (labels.length > 0) {
+      if (videoTracks.length > 0) {
         const initialStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: videoTracks[0].deviceId } } });
         console.log('initial stream', initialStream);
         setStream(initialStream);
-        setSelectedCamera(labels[0]);
 
         if (videoRef.current) {
           videoRef.current.srcObject = initialStream;
+
+          const labels = videoTracks.map(track => track.label);
+          console.log('labels', labels);
+          setCameraLabels(labels);
+          setSelectedCamera(labels[0]);
         }
       }
     } catch (error) {
