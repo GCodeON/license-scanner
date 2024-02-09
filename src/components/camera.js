@@ -23,9 +23,9 @@ const Camera = ({onImageCapture}) => {
         console.log('initial stream', initialStream);
         setStream(initialStream);
 
-        devices = await navigator.mediaDevices.enumerateDevices();
+       const devices = await navigator.mediaDevices.enumerateDevices();
         console.log('devices', devices);
-        videoTracks = devices.filter(device => device.kind === 'videoinput');
+        const videoTracks = devices.filter(device => device.kind === 'videoinput');
         console.log('video tracks', videoTracks);
 
         if (videoRef.current) {
