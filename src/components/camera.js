@@ -6,7 +6,7 @@ const Camera = ({onImageCapture}) => {
   const canvasRef = useRef(null);
 
   const [stream, setStream] = useState(null);
-  const [cameraLabels, setCameraLabels] = useState([]);
+  const [cameraLabels, setCameraLabels] = useState(null);
   const [selectedCamera, setSelectedCamera] = useState('');
 
   useEffect(() => {
@@ -18,13 +18,8 @@ const Camera = ({onImageCapture}) => {
 
   const initCamera = async () => {
     try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      console.log('devices', devices);
-      const videoTracks = devices.filter(device => device.kind === 'videoinput');
-      console.log('video tracks', videoTracks);
-
       if (videoTracks.length > 0) {
-        const initialStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: videoTracks[0].deviceId } } });
+        const initialStream = await navigator.mediaDevices.getUserMedia({ video: true });
         console.log('initial stream', initialStream);
         setStream(initialStream);
 
