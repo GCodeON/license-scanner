@@ -6,6 +6,8 @@ const Camera = ({onImageCapture}) => {
   const canvasRef = useRef(null);
 
   const [stream, setStream] = useState(null);
+  const [devices, setDevices] = useState(null);
+  const [videoInputs, setVideoInputs] = useState(null);
   const [cameraLabels, setCameraLabels] = useState(null);
   const [selectedCamera, setSelectedCamera] = useState('');
 
@@ -20,19 +22,21 @@ const Camera = ({onImageCapture}) => {
         setStream(initialStream);
 
         if(initialStream) {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            console.log('devices', devices);
+            const allDevices = await navigator.mediaDevices.enumerateDevices();
+            setDevices(allDevices);
+            console.log('video tracks', allDevices);
             const videoTracks = devices.filter(device => device.kind === 'videoinput');
             console.log('video tracks', videoTracks);
-        }
+            setVideoInputs(videoTracks);
 
-        if (videoRef.current) {
-          videoRef.current.srcObject = initialStream;
-
-          const labels = videoTracks.map(track => track.label);
-          console.log('labels', labels);
-          setCameraLabels(labels);
-          setSelectedCamera(labels[0]);
+            if (videoRef.current) {
+                videoRef.current.srcObject = initialStream;
+      
+                const labels = videoTracks.map(track => track.label);
+                console.log('labels', labels);
+                setCameraLabels(labels);
+                setSelectedCamera(labels[0]);
+              }
         }
     } catch (error) {
       console.error('Error accessing media devices:', error);
@@ -47,10 +51,8 @@ const Camera = ({onImageCapture}) => {
 
   const switchCamera = async () => {
     try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoTracks = devices.filter(device => device.kind === 'videoinput');
-      console.log('device list', videoTracks);
-      const selectedTrack = videoTracks.find(track => track.label === selectedCamera);
+        
+      const selectedTrack = videoInputs.find(track => track.label === selectedCamera);
 
       if (selectedTrack) {
         const newStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: selectedTrack.deviceId } } });
