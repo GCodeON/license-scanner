@@ -20,6 +20,22 @@ export default function LicenseScanner() {
         
         startWebcam();
 
+    }, []);
+
+    useEffect(() => {
+        if(imageSrc) {
+            decodePDF417FromImage();
+        }
+    }, [imageSrc]);
+    
+    async function startWebcam() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoRef.current.srcObject = stream;
+        } catch(error) {
+            console.error(`Error accessing webcam: ${error}`, error)
+        }
+
         return () => {
             const stream = videoRef.current.srcObject;
 
@@ -28,39 +44,9 @@ export default function LicenseScanner() {
                 tracks.forEach(track => track.stop());
             }
         };
-
-    }, []);
-
-    useEffect(() => {
-        if(imageSrc) {
-            // Tesseract.recognize(imageSrc, 'eng', {
-            //     logger: (info) => console.log('logger', info)    
-            // })
-            // .then(result => {
-            //     console.log('res', result);
-            // })
-            // .catch(error => {
-            //     console.log('error', error)
-            // })
-
-            decodePDF417FromImage();
-            
-
-        }
-    }, [imageSrc]);
-    
-
-
-    const startWebcam = async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            videoRef.current.srcObject = stream;
-        } catch(error) {
-            console.error(`Error accessing webcam: ${error}`, error)
-        }
     };
 
-    const captureImage = () => {
+    function captureImage() {
         const video = videoRef.current;
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
@@ -77,7 +63,7 @@ export default function LicenseScanner() {
         }
     }
 
-    const handleFileChange = (e) => {
+   function handleFileChange(e) {
         const file = e.target.files[0];
     
         if (file) {
@@ -91,44 +77,19 @@ export default function LicenseScanner() {
         }
     };
 
-    const decodePDF417FromImage = async () => {
+    async function decodePDF417FromImage() {
         try {
-            // const barcodeDetector = new BarcodeDetector({ formats: ['pdf417'] });
-      
-            // const imageElement = new Image();
-      
-            // // Load the image and wait for it to be fully loaded
-            // await new Promise((resolve, reject) => {
-            //   imageElement.onload = resolve;
-            //   imageElement.onerror = reject;
-            //   imageElement.src = imageSrc;
-            // });
-
-      
-            // const barcodes = await barcodeDetector.detect(imageElement);
-            // // console.log('barcodes', barcodes);
-            // if (barcodes.length > 0) {
-            //     console.log('raw', barcodes[0].rawValue);
-            //     const parsedData = parseData(barcodes[0].rawValue);
-            //     setScanData(barcodes[0].rawValue)
-            //     console.log('parsed', parsedData);
-            //     setLicenseData(parsedData);
-            
-            // } else {
-            //   console.error('No PDF417 barcode found in the image.');
-            // }
-
             const resultImage = await codeReader.decodeFromImageUrl(imageSrc);
-  
             const parsedData = parseData(resultImage.text);
+
             setScanData(resultImage.text)
-            console.log('parsed', parsedData);
             setLicenseData(parsedData);
 
         } catch (error) {
           console.error('Error decoding PDF417 barcode:', error.message);
         }
-      };
+    };
+    
 
     return (
         <div className="scanner">
