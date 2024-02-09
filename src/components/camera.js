@@ -45,6 +45,7 @@ const Camera = ({onImageCapture}) => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoTracks = devices.filter(device => device.kind === 'videoinput');
+      console.log('device list', videoTracks);
       const selectedTrack = videoTracks.find(track => track.label === selectedCamera);
 
       if (selectedTrack) {
