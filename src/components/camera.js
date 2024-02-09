@@ -10,23 +10,21 @@ const Camera = ({onImageCapture}) => {
   const [selectedCamera, setSelectedCamera] = useState('');
 
   useEffect(() => {
-    
-
     // initCamera();
-
   }, []);
 
   const initCamera = async () => {
     try {
-      if (videoTracks.length > 0) {
         const initialStream = await navigator.mediaDevices.getUserMedia({ video: true });
         console.log('initial stream', initialStream);
         setStream(initialStream);
 
-       const devices = await navigator.mediaDevices.enumerateDevices();
-        console.log('devices', devices);
-        const videoTracks = devices.filter(device => device.kind === 'videoinput');
-        console.log('video tracks', videoTracks);
+        if(initialStream) {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            console.log('devices', devices);
+            const videoTracks = devices.filter(device => device.kind === 'videoinput');
+            console.log('video tracks', videoTracks);
+        }
 
         if (videoRef.current) {
           videoRef.current.srcObject = initialStream;
@@ -36,7 +34,6 @@ const Camera = ({onImageCapture}) => {
           setCameraLabels(labels);
           setSelectedCamera(labels[0]);
         }
-      }
     } catch (error) {
       console.error('Error accessing media devices:', error);
     }
@@ -109,9 +106,13 @@ const Camera = ({onImageCapture}) => {
             </>
         )}
 
-      <button onClick={captureImage}>Capture Image</button>
-      <video ref={videoRef} autoPlay playsInline />
-      <canvas ref={canvasRef}></canvas>
+        {stream && ( 
+            <>
+                <button onClick={captureImage}>Capture Image</button>
+                <video ref={videoRef} autoPlay playsInline />
+                <canvas ref={canvasRef}></canvas>
+            </>
+        )} 
     </div>
   );
 };
