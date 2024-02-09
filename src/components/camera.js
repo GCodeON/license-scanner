@@ -10,40 +10,43 @@ const Camera = ({onImageCapture}) => {
   const [selectedCamera, setSelectedCamera] = useState('');
 
   useEffect(() => {
-    const initCamera = async () => {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        console.log('devices', devices);
-        const videoTracks = devices.filter(device => device.kind === 'videoinput');
-        console.log('video tracks', videoTracks);
-        const labels = videoTracks.map(track => track.label);
-        console.log('labels', labels);
+    
 
-        setCameraLabels(labels);
+    // initCamera();
 
-        if (videoTracks[0].deviceId) {
-          const initialStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: videoTracks[0].deviceId } } });
-          console.log('initial stream', initialStream);
-          setStream(initialStream);
-          setSelectedCamera(labels[0]);
+  }, []);
 
-          if (videoRef.current) {
-            videoRef.current.srcObject = initialStream;
-          }
+  const initCamera = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      console.log('devices', devices);
+      const videoTracks = devices.filter(device => device.kind === 'videoinput');
+      console.log('video tracks', videoTracks);
+      const labels = videoTracks.map(track => track.label);
+      console.log('labels', labels);
+
+      setCameraLabels(labels);
+
+      if (labels.length > 0) {
+        const initialStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: videoTracks[0].deviceId } } });
+        console.log('initial stream', initialStream);
+        setStream(initialStream);
+        setSelectedCamera(labels[0]);
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = initialStream;
         }
-      } catch (error) {
-        console.error('Error accessing media devices:', error);
       }
-    };
-
-    initCamera();
+    } catch (error) {
+      console.error('Error accessing media devices:', error);
+    }
 
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, []);
+};
 
   const switchCamera = async () => {
     try {
@@ -91,6 +94,7 @@ const Camera = ({onImageCapture}) => {
 
   return (
     <div>
+        <button onClick={initCamera}>Start Camera</button>
         {cameraLabels && (
             <>
                 <label>
