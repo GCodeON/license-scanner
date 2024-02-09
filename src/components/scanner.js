@@ -1,15 +1,14 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
-import '@/scss/scanner.scss';
-import Tesseract from 'tesseract.js';
+import { BrowserPDF417Reader } from '@zxing/browser';
 import { parseData } from '@/utils/license-mapping';
-import { BrowserPDF417Reader } from '@zxing/browser'
+import Tesseract from 'tesseract.js';
 
+import Camera from '@/components/camera';
+
+import '@/scss/scanner.scss';
 
 export default function LicenseScanner() {
-    const videoRef = useRef(null);
-    const canvasRef = useRef(null);
-
     const [imageSrc, setImageSrc] = useState(null);
     const [scanData, setScanData] = useState(null);
     const [licenseData, setLicenseData] = useState(null);
@@ -17,7 +16,6 @@ export default function LicenseScanner() {
     const codeReader = new BrowserPDF417Reader();
 
     useEffect(() => {
-        startWebcam();
     }, []);
 
     useEffect(() => {
@@ -27,40 +25,6 @@ export default function LicenseScanner() {
         }
     }, [imageSrc]);
     
-    async function startWebcam() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            videoRef.current.srcObject = stream;
-        } catch(error) {
-            console.error(`Error accessing webcam: ${error}`, error)
-        }
-
-        return () => {
-            const stream = videoRef.current.srcObject;
-
-            if(stream) {
-                const tracks = stream.getTracks();
-                tracks.forEach(track => track.stop());
-            }
-        };
-    };
-
-    function captureImage() {
-        const video = videoRef.current;
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
-
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        const imageDataUrl = canvas.toDataURL('image/png');
-
-        if(imageDataUrl) {
-            setImageSrc(imageDataUrl);
-        }
-    }
 
    function handleFileChange(e) {
         const file = e.target.files[0];
@@ -101,16 +65,15 @@ export default function LicenseScanner() {
         })
     };
 
+    function handleImageCapture(image) {
+        console.log('handle image', image);
+        setImageSrc(image);
+    }
+
     return (
         <div className="scanner">
-            <div className="mediaWrapper">
-                <video ref={videoRef} autoPlay playsInline />
-            </div>
-            <canvas ref={canvasRef}></canvas>
-            <div className="options">
-                <input type="file" onChange={handleFileChange} />
-                <button onClick={captureImage}>Capture Image</button>
-            </div>
+            <Camera onImageCapture={handleImageCapture}></Camera>
+            <input type="file" onChange={handleFileChange} />
             {imageSrc && (
                 <img src={imageSrc} alt="PDF417 Image" />
             )}
@@ -118,7 +81,8 @@ export default function LicenseScanner() {
                 <div>
                     {/* <p>{scanData}</p> */}
                     <p>Full Name: {licenseData['first_name']} {licenseData['last_name']}</p>
-                    <p>Address: {licenseData['address_1']} {licenseData['address_2']}<br></br> {licenseData['city']}  {licenseData['state']} {licenseData['postal_code']}</p>
+                    <p>Address: {licenseData['address_1']} {licenseData['address_2']}
+                    <br></br> {licenseData['city']}  {licenseData['state']} {licenseData['postal_code']}</p>
                     <p>EXP: {licenseData['License Expiration Date']}</p>
                     <p>ISS: {licenseData['License or ID Document Issue Date']}</p>
                 </div>
