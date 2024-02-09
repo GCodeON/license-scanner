@@ -25,7 +25,7 @@ const Camera = ({onImageCapture}) => {
             const allDevices = await navigator.mediaDevices.enumerateDevices();
             setDevices(allDevices);
             console.log('video tracks', allDevices);
-            const videoTracks = devices.filter(device => device.kind === 'videoinput');
+            const videoTracks = allDevices.filter(device => device.kind === 'videoinput');
             console.log('video tracks', videoTracks);
             setVideoInputs(videoTracks);
 
@@ -51,7 +51,7 @@ const Camera = ({onImageCapture}) => {
 
   const switchCamera = async () => {
     try {
-        
+
       const selectedTrack = videoInputs.find(track => track.label === selectedCamera);
 
       if (selectedTrack) {
