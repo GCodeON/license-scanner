@@ -72,6 +72,7 @@ const Camera = ({onImageCapture}) => {
 
   const handleCameraChange = (event) => {
     setSelectedCamera(event.target.value);
+    switchCamera();
   };
 
   function captureImage() {
@@ -93,7 +94,9 @@ const Camera = ({onImageCapture}) => {
 
   return (
     <div>
-        <button onClick={initCamera}>Start Camera</button>
+        {!stream && ( 
+            <button onClick={initCamera}>Start Camera</button>
+        )}
         {cameraLabels && (
             <>
                 <label>
@@ -104,7 +107,7 @@ const Camera = ({onImageCapture}) => {
                     ))}
                     </select>
                 </label>
-                <button onClick={switchCamera}>Switch Camera</button>
+                {/* <button onClick={switchCamera}>Switch Camera</button> */}
             </>
         )}
 
