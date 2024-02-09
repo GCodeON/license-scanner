@@ -14,12 +14,15 @@ const Camera = ({onImageCapture}) => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoTracks = devices.filter(device => device.kind === 'videoinput');
+        console.log('video tracks', videoTracks);
         const labels = videoTracks.map(track => track.label);
+        console.log('labels', labels);
 
         setCameraLabels(labels);
 
         if (labels.length > 0) {
           const initialStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: videoTracks[0].deviceId } } });
+          console.log('initial stream', initialStream);
           setStream(initialStream);
           setSelectedCamera(labels[0]);
 
@@ -87,15 +90,19 @@ const Camera = ({onImageCapture}) => {
 
   return (
     <div>
-      <label>
-        Select Camera:
-        <select value={selectedCamera} onChange={handleCameraChange}>
-          {cameraLabels.map(label => (
-            <option key={label} value={label}>{label}</option>
-          ))}
-        </select>
-      </label>
-      <button onClick={switchCamera}>Switch Camera</button>
+        {cameraLabels && (
+            <>
+                <label>
+                    Select Camera:
+                    <select value={selectedCamera} onChange={handleCameraChange}>
+                    {cameraLabels.map(label => (
+                        <option key={label} value={label}>{label}</option>
+                    ))}
+                    </select>
+                </label>
+                <button onClick={switchCamera}>Switch Camera</button>
+            </>
+        )}
 
       <button onClick={captureImage}>Capture Image</button>
       <video ref={videoRef} autoPlay playsInline />
