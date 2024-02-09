@@ -21,8 +21,8 @@ const Camera = ({onImageCapture}) => {
 
         setCameraLabels(labels);
 
-        if (labels.length > 0 && videoTracks) {
-          const initialStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: '9DC87DCE9DDC6C8DDBA79AEE8D9FA474933C4200'} } });
+        if (videoTracks[0].deviceId) {
+          const initialStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: videoTracks[0].deviceId } } });
           console.log('initial stream', initialStream);
           setStream(initialStream);
           setSelectedCamera(labels[0]);
