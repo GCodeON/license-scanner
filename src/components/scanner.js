@@ -17,14 +17,13 @@ export default function LicenseScanner() {
     const codeReader = new BrowserPDF417Reader();
 
     useEffect(() => {
-        
         startWebcam();
-
     }, []);
 
     useEffect(() => {
         if(imageSrc) {
             decodePDF417FromImage();
+            // OCR();
         }
     }, [imageSrc]);
     
@@ -90,6 +89,17 @@ export default function LicenseScanner() {
         }
     };
     
+    function OCR() {
+        Tesseract.recognize(imageSrc, 'eng', {
+            logger: (info) => console.log('logger', info)    
+        })
+        .then(result => {
+            console.log('res', result);
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+    };
 
     return (
         <div className="scanner">
