@@ -9,11 +9,13 @@ const Camera = ({onImageCapture}) => {
   const [devices, setDevices] = useState(null);
   const [videoInputs, setVideoInputs] = useState(null);
   const [cameraLabels, setCameraLabels] = useState(null);
-  const [selectedCamera, setSelectedCamera] = useState('');
+  const [selectedCamera, setSelectedCamera] = useState(null);
 
   useEffect(() => {
-    // initCamera();
-  }, []);
+    if(selectedCamera) {
+        switchCamera();
+    }
+  }, [selectedCamera]);
 
   const initCamera = async () => {
     try {
@@ -106,7 +108,7 @@ const Camera = ({onImageCapture}) => {
                     ))}
                     </select>
                 </label>
-                <button onClick={switchCamera}>Switch Camera</button>
+                {/* <button onClick={switchCamera}>Switch Camera</button> */}
             </>
         )}
 
