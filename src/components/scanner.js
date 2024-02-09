@@ -13,6 +13,8 @@ export default function LicenseScanner() {
     const [imageSrc, setImageSrc] = useState(null);
     const [scanData, setScanData] = useState(null);
     const [licenseData, setLicenseData] = useState(null);
+    
+    const codeReader = new BrowserPDF417Reader();
 
     useEffect(() => {
         
@@ -116,7 +118,6 @@ export default function LicenseScanner() {
             //   console.error('No PDF417 barcode found in the image.');
             // }
 
-            const codeReader = new BrowserPDF417Reader();
             const resultImage = await codeReader.decodeFromImageUrl(imageSrc);
   
             const parsedData = parseData(resultImage.text);
@@ -133,11 +134,12 @@ export default function LicenseScanner() {
         <div className="scanner">
             <div className="mediaWrapper">
                 <video ref={videoRef} autoPlay playsInline />
-                <canvas ref={canvasRef}></canvas>
             </div>
             <canvas ref={canvasRef}></canvas>
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={captureImage}>Capture Image</button>
+            <div className="options">
+                <input type="file" onChange={handleFileChange} />
+                <button onClick={captureImage}>Capture Image</button>
+            </div>
             {imageSrc && (
                 <img src={imageSrc} alt="PDF417 Image" />
             )}
