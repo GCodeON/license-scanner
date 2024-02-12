@@ -83,8 +83,10 @@
             justify-content : center;
             p {
                 line-height: 2em;
-                font-size: 18px;
                 font-weight: bold;
+                @include breakpoint(medium) {
+                    font-size: 18px;
+                }
             }
         }
     }
