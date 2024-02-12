@@ -108,7 +108,6 @@ const Camera = ({onImageCapture}) => {
                     </select>
                 </label>
                 <button onClick={captureImage}>Capture Image</button>
-                {/* <button onClick={switchCamera}>Switch Camera</button> */}
             </div>
         )}
 

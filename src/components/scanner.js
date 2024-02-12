@@ -88,7 +88,6 @@ export default function LicenseScanner() {
                 )}
                 {licenseData && errorMessage && (
                     <div className="info">
-                        {/* <p>{scanData}</p> */}
                         <p>Full Name: {licenseData['first_name']} {licenseData['last_name']}</p>
                         <p>Address: {licenseData['address_1']} {licenseData['address_2']}
                         <br></br> {licenseData['city']}  {licenseData['state']} {licenseData['postal_code']}</p>

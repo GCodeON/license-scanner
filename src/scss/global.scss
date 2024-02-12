@@ -64,10 +64,10 @@ p {
 	text-align: center;
 }
 
-button {
+button, input::file-selector-button   {
 	background-color: steelblue;
 	color: white;
-	padding: 1em;
+	padding: 1em 2em;
 	border: none;
 	border-radius: 25px;
 }
