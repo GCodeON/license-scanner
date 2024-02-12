@@ -53,6 +53,7 @@ export default function LicenseScanner() {
           console.error('Error decoding PDF417 barcode:', error.message);
 
           setErrorMessage('Error decoding PDF417 barcode');
+          setLicenseData(null);
         }
     };
     
@@ -81,7 +82,7 @@ export default function LicenseScanner() {
                 <Camera onImageCapture={handleImageCapture}></Camera>
             )} 
 
-            <div className="results">
+            <div className={imageSrc ? 'results' : ''}>
                 {imageSrc && (
                     <img src={imageSrc} alt="PDF417 Image" />
                 )}
