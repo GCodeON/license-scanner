@@ -9,6 +9,7 @@ import Camera from '@/components/camera';
 import '@/scss/scanner.scss';
 
 export default function LicenseScanner() {
+    const [errorMessage, setErrorMessage] = useState(null);
     const [imageSrc, setImageSrc] = useState(null);
     const [scanData, setScanData] = useState(null);
     const [licenseData, setLicenseData] = useState(null);
@@ -21,7 +22,7 @@ export default function LicenseScanner() {
     useEffect(() => {
         if(imageSrc) {
             decodePDF417FromImage();
-            // OCR();
+            OCR();
         }
     }, [imageSrc]);
     
@@ -44,12 +45,14 @@ export default function LicenseScanner() {
         try {
             const resultImage = await codeReader.decodeFromImageUrl(imageSrc);
             const parsedData = parseData(resultImage.text);
-
+            console.log('raw', resultImage);
             setScanData(resultImage.text)
             setLicenseData(parsedData);
 
         } catch (error) {
           console.error('Error decoding PDF417 barcode:', error.message);
+
+          setErrorMessage('Error decoding PDF417 barcode');
         }
     };
     
@@ -70,23 +73,35 @@ export default function LicenseScanner() {
         setImageSrc(image);
     }
 
+
     return (
         <div className="scanner">
-            <Camera onImageCapture={handleImageCapture}></Camera>
+            <h1>License Scanner</h1>
+            {!imageSrc && (
+                <Camera onImageCapture={handleImageCapture}></Camera>
+            )} 
+
+            <div className="results">
+                {imageSrc && (
+                    <img src={imageSrc} alt="PDF417 Image" />
+                )}
+                {licenseData && errorMessage && (
+                    <div className="info">
+                        {/* <p>{scanData}</p> */}
+                        <p>Full Name: {licenseData['first_name']} {licenseData['last_name']}</p>
+                        <p>Address: {licenseData['address_1']} {licenseData['address_2']}
+                        <br></br> {licenseData['city']}  {licenseData['state']} {licenseData['postal_code']}</p>
+                        <p>EXP: {licenseData['License Expiration Date']}</p>
+                        <p>ISS: {licenseData['License or ID Document Issue Date']}</p>
+                    </div>
+                )}
+                {errorMessage && !licenseData && (
+                    <div className='info'>
+                        <p>{errorMessage}</p>
+                    </div>
+                )}
+            </div>
             <input type="file" onChange={handleFileChange} />
-            {imageSrc && (
-                <img src={imageSrc} alt="PDF417 Image" />
-            )}
-            {licenseData && (
-                <div>
-                    {/* <p>{scanData}</p> */}
-                    <p>Full Name: {licenseData['first_name']} {licenseData['last_name']}</p>
-                    <p>Address: {licenseData['address_1']} {licenseData['address_2']}
-                    <br></br> {licenseData['city']}  {licenseData['state']} {licenseData['postal_code']}</p>
-                    <p>EXP: {licenseData['License Expiration Date']}</p>
-                    <p>ISS: {licenseData['License or ID Document Issue Date']}</p>
-                </div>
-            )}
         </div>
     )
 }

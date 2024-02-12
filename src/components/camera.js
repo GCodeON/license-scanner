@@ -20,15 +20,13 @@ const Camera = ({onImageCapture}) => {
   const initCamera = async () => {
     try {
         const initialStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        console.log('initial stream', initialStream);
         setStream(initialStream);
 
         if(initialStream) {
             const allDevices = await navigator.mediaDevices.enumerateDevices();
-            setDevices(allDevices);
-            console.log('video tracks', allDevices);
             const videoTracks = allDevices.filter(device => device.kind === 'videoinput');
             console.log('video tracks', videoTracks);
+            setDevices(allDevices);
             setVideoInputs(videoTracks);
 
             if (videoRef.current) {
@@ -94,27 +92,28 @@ const Camera = ({onImageCapture}) => {
   }
 
   return (
-    <div>
+    <div className="camera">
         {!stream && ( 
             <button onClick={initCamera}>Start Camera</button>
         )}
         {cameraLabels && (
-            <>
+            <div className="top options">
                 <label>
                     Select Camera:
+                    <br></br>
                     <select value={selectedCamera} onChange={handleCameraChange}>
                     {cameraLabels.map(label => (
                         <option key={label} value={label}>{label}</option>
                     ))}
                     </select>
                 </label>
+                <button onClick={captureImage}>Capture Image</button>
                 {/* <button onClick={switchCamera}>Switch Camera</button> */}
-            </>
+            </div>
         )}
 
         {stream && ( 
             <>
-                <button onClick={captureImage}>Capture Image</button>
                 <video ref={videoRef} autoPlay playsInline />
                 <canvas ref={canvasRef}></canvas>
             </>
