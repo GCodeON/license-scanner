@@ -70,9 +70,11 @@ npm run build
 ## Assumptions
 
 - Used all client side open source libraries, without requiring an API key. 
-- Responsive web design using a mobile first approach to fulfill cross platform compatability
-- Tried using an OCR approach to scan information from the front of the license, however the data extraction varied widely depending on the quality of the image that creating a regex pattern to parse data was not viable.
+- Responsive web design using a mobile first approach to fulfill cross-platform compatibility
+- Tried using an OCR approach to scan information from the front of the license, however the data extraction varied widely depending on the quality of the image
+- creating a regex pattern to parse data from OCR process was not viable.
 - Opted to scan the PDF417 barcode on the back of the license to extract user information
+- Reformatted raw data by mapping three letter codes to field[value] object with proper data values
 
 
 ## License
