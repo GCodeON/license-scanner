@@ -86,7 +86,7 @@ export default function LicenseScanner() {
                 {imageSrc && (
                     <img src={imageSrc} alt="PDF417 Image" />
                 )}
-                {licenseData && errorMessage && (
+                {licenseData && (
                     <div className="info">
                         <p>Full Name: {licenseData['first_name']} {licenseData['last_name']}</p>
                         <p>Address: {licenseData['address_1']} {licenseData['address_2']}
