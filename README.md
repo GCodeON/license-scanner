@@ -38,26 +38,6 @@ View project locally
 ```sh
 http://localhost:3000
 ```
-## Project Architecture
-
-├── /src
-│   ├── /app
-│   │   ├── layout.js
-│   │   ├── page.js
-│   ├── /components
-│   ├── /scss
-├── /public
-│   ├── css
-│   │   ├── **/*.css
-│   ├── images
-│   ├── js
-│   ├── index.html
-├── /dist (or build)
-├── /node_modules
-├── package.json
-├── package-lock.json
-└── .gitignore   
-
 
 #### Building for source
 
@@ -66,6 +46,27 @@ For production release:
 ```sh
 npm run build
 ```
+
+## Project Architecture
+
+├── /src  
+│   ├── /app  
+│   │   ├── layout.js  
+│   │   ├── page.js  
+│   ├── /components  
+│   ├── /scss  
+├── /public  
+│   ├── css  
+│   │   ├── **/*.css  
+│   ├── images  
+│   ├── js  
+│   ├── index.html  
+├── /dist (or build)  
+├── /node_modules  
+├── package.json  
+├── package-lock.json  
+└── .gitignore   
+
 
 ## Assumptions
 
